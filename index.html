@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FitWithAmine27 - Join Now</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>FitWithAmine27</h1>
+    <p>Fill in your details and start your fitness journey</p>
+    
+    <form id="customerForm" class="form-box">
+      <label for="firstName">First Name</label>
+      <input type="text" id="firstName" required>
+
+      <label for="lastName">Last Name</label>
+      <input type="text" id="lastName" required>
+
+      <label for="age">Age</label>
+      <input type="number" id="age" required>
+
+      <label for="height">Height (cm)</label>
+      <input type="number" id="height" required>
+
+      <label for="weight">Weight (kg)</label>
+      <input type="number" id="weight" required>
+
+      <button type="submit">Submit</button>
+    </form>
+    <p id="message"></p>
+  </div>
+
+  <script>
+    const form = document.getElementById("customerForm");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const msgEl = document.getElementById("message");
+      const customer = {
+        firstName: document.getElementById("firstName").value,
+        lastName:  document.getElementById("lastName").value,
+        age:       document.getElementById("age").value,
+        height:    document.getElementById("height").value,
+        weight:    document.getElementById("weight").value
+      };
+      try {
+        const res = await fetch("http://localhost:5000/api/customers", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(customer)
+        });
+        if (res.ok) {
+          msgEl.textContent = "✅ Your info has been submitted!";
+          form.reset();
+        } else {
+          msgEl.textContent = "❌ Error saving data.";
+        }
+      } catch (err) {
+        msgEl.textContent = "❌ " + err.message;
+      }
+    });
+  </script>
+</body>
+</html>

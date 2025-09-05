@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FitWithAmine27 - Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Customer Submissions</h1>
+    <div id="customerList" class="list"></div>
+  </div>
+
+  <script>
+    async function loadCustomers() {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.location.href = "login.html";
+        return;
+      }
+      try {
+        const res = await fetch("http://localhost:5000/api/customers", {
+          headers: { "Authorization": "Bearer " + token }
+        });
+        if (res.status === 403) {
+          window.location.href = "login.html";
+          return;
+        }
+        const customers = await res.json();
+        const customerList = document.getElementById("customerList");
+        customerList.innerHTML = customers.map(c => `
+          <div class="customer-card">
+            <h3>${c.firstName} ${c.lastName}</h3>
+            <p>Age: ${c.age}</p>
+            <p>Height: ${c.height} cm</p>
+            <p>Weight: ${c.weight} kg</p>
+          </div>
+        `).join("");
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    loadCustomers();
+  </script>
+</body>
+</html>
